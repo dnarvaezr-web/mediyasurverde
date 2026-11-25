@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediYaSurVerde · Medicamentos a domicilio</title>
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="cover-active">
+
+<section class="project-cover" id="projectCover" aria-labelledby="coverTitle">
+  <div class="cover-card">
+    <div class="cover-main">
+      <img class="cover-logo" id="coverLogo" src="assets/logo.png" alt="Logo MediYaSurVerde">
+      <p class="cover-eyebrow">Presentación del proyecto</p>
+      <h1 class="cover-title" id="coverTitle">MediYaSurVerde</h1>
+      <p class="cover-subtitle">Propuesta de aplicación móvil para pacientes y portal web para operadores de Cruz Verde, diseñada para facilitar el acceso y la gestión de medicamentos a adultos mayores, personas con movilidad reducida y personas con discapacidad.</p>
+      <button class="cover-button" type="button" onclick="enterPrototype()">
+        Ver prototipo
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+      </button>
+    </div>
+    <aside class="cover-details" aria-label="Información académica del proyecto">
+      <div class="cover-detail">
+        <span class="cover-detail-label">Materia</span>
+        <div class="cover-detail-value">Ingeniería de Software III</div>
+      </div>
+      <div class="cover-detail">
+        <span class="cover-detail-label">Programa</span>
+        <div class="cover-detail-value">Ingeniería de Sistemas</div>
+      </div>
+      <div class="cover-detail">
+        <span class="cover-detail-label">Integrantes</span>
+        <div class="cover-detail-value cover-members">
+          <span>Daniela Narváez</span>
+          <span>Daniela Zemanate</span>
+        </div>
+      </div>
+      <div class="cover-detail">
+        <span class="cover-detail-label">Grupo</span>
+        <div class="cover-detail-value">Grupo D</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div class="page" id="prototypePage" tabindex="-1">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="eyebrow">Grupo D · Sistema Multicanal Sura / Cruz Verde</span>
+      <h1>Sistema multicanal · Sprint 2</h1>
+      <p>Propuesta de aplicación móvil para pacientes y portal web para operadores de Cruz Verde, diseñada para facilitar el acceso y la gestión de medicamentos a adultos mayores, personas con movilidad reducida y personas con discapacidad.</p>
+    </div>
+    <div class="topbar-controls">
+      <div class="switch">
+        <button class="active" data-view="mobile-view" onclick="switchView(this)">📱 App móvil</button>
+        <button data-view="web-view" onclick="switchView(this)">💻 Portal web</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ MOBILE VIEW ============ -->
+  <section id="mobile-view" class="view active">
+    <div class="layout app-device-only" id="mobilePrototypeLayout">
+      <div class="phone-wrap">
+        <div class="phone" id="phoneShell">
+          <div class="phone-screen">
+            <div class="phone-status" aria-label="Barra de estado del teléfono">
+              <span class="phone-status-time" id="phoneClock">9:41</span>
+              <span class="phone-status-notch" aria-hidden="true"></span>
+              <span class="phone-status-icons" aria-hidden="true">
+                <svg class="signal-icon" viewBox="0 0 18 14"><path d="M2 12v-2"></path><path d="M6.5 12V8"></path><path d="M11 12V5"></path><path d="M15.5 12V2"></path></svg>
+                <svg viewBox="0 0 18 14"><path d="M2 5.5c3.9-3.5 10.1-3.5 14 0"></path><path d="M5 8.2c2.2-2 5.8-2 8 0"></path><path d="M8 11c.6-.5 1.4-.5 2 0"></path></svg>
+                <svg class="battery-icon" viewBox="0 0 24 12"><rect x="1" y="1" width="19" height="10" rx="2"></rect><path d="M22 4v4"></path><rect class="battery-fill" x="3.2" y="3.2" width="13.8" height="5.6" rx="1"></rect></svg>
+              </span>
+            </div>
+            <div class="phone-content" id="phoneContent"></div>
+            <div class="phone-nav" id="phoneNav">
+              <button data-screen="home" class="active" onclick="renderScreen('home', this)"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path></svg></span><span>Inicio</span></button>
+              <button data-screen="track" onclick="renderScreen('track', this)"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z"></path><path d="M4 7.5 12 12l8-4.5"></path><path d="M12 12v9"></path></svg></span><span>Mis pedidos</span></button>
+              <button data-screen="help" onclick="renderScreen('help', this)"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 2 1.4-4.2A8 8 0 1 1 21 12Z"></path><path d="M9.7 9.4a2.4 2.4 0 0 1 4.6.8c0 1.8-2.3 2-2.3 3.5"></path><path d="M12 17h.01"></path></svg></span><span>Ayuda</span></button>
+              <button data-screen="profile" onclick="renderScreen('profile', this)"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.8-4 3.2-6 7-6s6.2 2 7 6"></path></svg></span><span>Usuario</span></button>
+            </div>
+            <div class="accessibility-widget" id="accessibilityWidget">
+              <button class="accessibility-fab" id="accessibilityFab" type="button" onclick="toggleAccessibilityPanel()" aria-label="Abrir opciones de accesibilidad" title="Accesibilidad" aria-expanded="false">
+                <svg class="accessibility-fab-icon accessibility-fab-icon-open" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="1.8"></circle><path d="M12 7.2v5.2"></path><path d="M8.2 10.2 12 8.4l3.8 1.8"></path><path d="M9.2 21 12 15.4 14.8 21"></path><path d="M8.7 12.1 6 16"></path><path d="M15.3 12.1 18 16"></path></svg>
+                <svg class="accessibility-fab-icon accessibility-fab-icon-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
+              </button>
+              <div class="accessibility-panel" id="accessibilityPanel" hidden>
+                <p class="accessibility-panel-title">Accesibilidad</p>
+                <p class="accessibility-panel-subtitle">Funciones rápidas pensadas para adultos mayores.</p>
+                <button class="accessibility-option" type="button" onclick="toggleTextFromAccessibility()">
+                  <span class="accessibility-option-copy"><span class="accessibility-option-title">Texto grande</span><span class="accessibility-option-desc">Aumenta el tamaño de lectura</span></span>
+                  <span class="accessibility-pill off" id="textSizeState">Off</span>
+                </button>
+                <button class="accessibility-option" type="button" onclick="toggleHighContrast()">
+                  <span class="accessibility-option-copy"><span class="accessibility-option-title">Alto contraste</span><span class="accessibility-option-desc">Mejora la visibilidad de textos y botones</span></span>
+                  <span class="accessibility-pill off" id="contrastState">Off</span>
+                </button>
+                <button class="accessibility-option" id="speechAccessibilityOption" type="button" onclick="toggleSpeechCurrentScreen()" aria-pressed="false">
+                  <span class="accessibility-option-copy"><span class="accessibility-option-title">Escuchar pantalla</span><span class="accessibility-option-desc" id="speechAccessibilityDescription">Lee en voz alta el contenido visible</span></span>
+                  <span class="accessibility-pill off" id="speechState">Leer</span>
+                </button>
+              </div>
+            </div>
+            <div class="mobile-modal-layer" id="mobileModalLayer" aria-hidden="true" onclick="handleMobileModalBackdrop(event)">
+              <div class="mobile-modal-card" id="mobileModalBody" role="dialog" aria-modal="true" aria-label="Ventana de la aplicación"></div>
+            </div>
+            <div class="mobile-modal-layer mobile-alert-layer" id="mobilePrototypeAlertLayer" aria-hidden="true" onclick="handlePrototypeAlertBackdrop(event)">
+              <div class="mobile-modal-card mobile-prototype-alert-card" role="alertdialog" aria-modal="true" aria-labelledby="mobilePrototypeAlertTitle" aria-describedby="mobilePrototypeAlertMessage">
+                <div class="mobile-prototype-alert-icon" aria-hidden="true">!</div>
+                <h3 id="mobilePrototypeAlertTitle">Aviso</h3>
+                <p class="mobile-prototype-alert-message" id="mobilePrototypeAlertMessage"></p>
+                <button class="big-btn primary" id="mobilePrototypeAlertButton" type="button" onclick="closePrototypeAlert()">Entendido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WEB VIEW ============ -->
+  <section id="web-view" class="view">
+    <div class="portal-login-stage" id="portalLoginView">
+      <form class="portal-login-card" onsubmit="handlePortalLogin(event)" novalidate>
+        <img class="portal-login-logo" src="assets/logo.png" alt="Logo MediYaSurVerde">
+        <h2>Portal Web - Cruz Verde</h2>
+        <p class="portal-login-copy">Ingresa con tu cuenta de operador para gestionar las solicitudes domiciliarias.</p>
+        <div class="portal-login-field">
+          <label for="portalLoginEmail">Correo del operador</label>
+          <input id="portalLoginEmail" name="email" type="email" autocomplete="username" placeholder="nombre@cruzverde.com.co" aria-describedby="portalLoginError">
+        </div>
+        <div class="portal-login-field">
+          <label for="portalLoginPassword">Contraseña</label>
+          <input id="portalLoginPassword" name="password" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres" minlength="6" aria-describedby="portalLoginError">
+        </div>
+        <div class="portal-login-error" id="portalLoginError" role="alert"></div>
+        <button class="portal-login-submit" type="submit">Ingresar al portal</button>
+      </form>
+    </div>
+
+    <div class="portal-shell" id="portalApp" hidden>
+      <div class="portal-topbar">
+        <div>
+          <strong>Portal Cruz Verde</strong>
+          <div class="who">Sesión: <span id="portalSessionRole"></span></div>
+        </div>
+        <div class="portal-session-actions">
+          <div class="who">EPS Sura · Gestión de pacientes y solicitudes domiciliarias</div>
+          <button class="portal-logout-button" type="button" onclick="logoutPortal()">Cerrar sesión</button>
+        </div>
+      </div>
+      <div class="portal-body">
+        <div class="portal-side">
+          <nav>
+            <a class="active" id="portalNavRequests" href="#" onclick="event.preventDefault(); showPortalSection('requests')">📋 Solicitudes</a>
+            <a id="portalNavCreateRequest" href="#" onclick="event.preventDefault(); showPortalSection('create-request')">➕ Crear solicitud</a>
+          </nav>
+        </div>
+        <div class="portal-main" id="portalContent"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Modal detalle de solicitud (portal) -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<div class="overlay prototype-alert-overlay" id="prototypeAlertOverlay" aria-hidden="true" onclick="handlePrototypeAlertBackdrop(event)">
+  <div class="modal prototype-alert-modal" role="alertdialog" aria-modal="true" aria-labelledby="prototypeAlertTitle" aria-describedby="prototypeAlertMessage">
+    <div class="prototype-alert-icon" aria-hidden="true">!</div>
+    <h3 id="prototypeAlertTitle">Aviso</h3>
+    <p class="prototype-alert-message" id="prototypeAlertMessage"></p>
+    <button class="btn approve" id="prototypeAlertButton" type="button" onclick="closePrototypeAlert()">Entendido</button>
+  </div>
+</div>
+
+
+<!-- app.js dibuja la interfaz; firebase-service.js conecta con Firebase y publica window.FB -->
+<script src="js/app.js" defer></script>
+<script type="module" src="js/firebase-service.js"
+        onerror="window.FB_LOAD_ERROR = true; window.dispatchEvent(new Event('fb-error'));"></script>
+</body>
+</html>

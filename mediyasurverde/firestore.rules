@@ -1,0 +1,117 @@
+rules_version = '2';
+
+// Reglas de seguridad de Cloud Firestore - MediYaSurVerde
+// - usuarios: perfil con rol ('paciente' | 'operador') y estado (activo).
+// - solicitudes: solicitudes de medicamentos a domicilio.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function userDoc() {
+      return /databases/$(database)/documents/usuarios/$(request.auth.uid);
+    }
+    function profile() {
+      return get(userDoc()).data;
+    }
+    function isActive() {
+      return signedIn() && exists(userDoc()) && profile().activo == true;
+    }
+    function isOperator() {
+      return isActive() && profile().rol == 'operador';
+    }
+    function isPatient() {
+      return isActive() && profile().rol == 'paciente';
+    }
+
+    // Campos comunes de una solicitud nueva (HU-02)
+    function validNewRequest(d) {
+      return d.estado == 'pendiente'
+        && d.medicamentos is list && d.medicamentos.size() > 0 && d.medicamentos.size() <= 20
+        && d.direccion is string && d.direccion.size() > 0 && d.direccion.size() <= 300
+        && d.fechaEntrega is string && d.fechaEntrega.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && d.pacienteNombre is string && d.pacienteDocumento is string
+        && d.creadaEn == request.time;
+    }
+
+    // Solicitud creada por el paciente desde la app
+    function validPatientCreate() {
+      let d = request.resource.data;
+      return validNewRequest(d)
+        && d.pacienteUid == request.auth.uid
+        && d.pacienteNombre == profile().nombre
+        && d.canal == 'App móvil'
+        && d.tieneFormula == false
+        && d.keys().hasOnly(['pacienteUid', 'pacienteNombre', 'pacienteDocumento', 'canal',
+                             'medicamentos', 'direccion', 'fechaEntrega', 'estado',
+                             'tieneFormula', 'creadaEn']);
+    }
+
+    // Solicitud registrada por el operador (canal asistido)
+    function validOperatorCreate() {
+      let d = request.resource.data;
+      return validNewRequest(d)
+        && d.canal == 'WhatsApp (asistido)'
+        && d.registradaPor == request.auth.uid
+        && d.tieneFormula is bool
+        && d.keys().hasOnly(['pacienteUid', 'pacienteNombre', 'pacienteDocumento', 'canal',
+                             'medicamentos', 'direccion', 'fechaEntrega', 'notas', 'estado',
+                             'tieneFormula', 'formulaNombre', 'registradaPor', 'creadaEn']);
+    }
+
+    function changed() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // HU-04: registrar la fórmula verificada (solo solicitudes pendientes)
+    function validFormulaUpdate() {
+      return resource.data.estado == 'pendiente'
+        && request.resource.data.tieneFormula == true
+        && request.resource.data.formulaNombre is string
+        && request.resource.data.formulaNombre.size() > 0
+        && request.resource.data.formulaRegistradaPor == request.auth.uid
+        && changed().hasOnly(['tieneFormula', 'formulaNombre', 'formulaRegistradaPor', 'formulaRegistradaEn']);
+    }
+
+    // HU-04: aprobar. Exige fórmula registrada; la decisión es definitiva.
+    function validApproval() {
+      return resource.data.estado == 'pendiente'
+        && resource.data.tieneFormula == true
+        && request.resource.data.estado == 'aprobada'
+        && request.resource.data.decididaPor == request.auth.uid
+        && request.resource.data.fechaDecision == request.time
+        && changed().hasOnly(['estado', 'decididaPor', 'decididaPorNombre', 'fechaDecision']);
+    }
+
+    // HU-04: rechazar. Exige motivo; la decisión es definitiva.
+    function validRejection() {
+      return resource.data.estado == 'pendiente'
+        && request.resource.data.estado == 'rechazada'
+        && request.resource.data.motivoRechazo is string
+        && request.resource.data.motivoRechazo.size() >= 5
+        && request.resource.data.decididaPor == request.auth.uid
+        && request.resource.data.fechaDecision == request.time
+        && changed().hasOnly(['estado', 'motivoRechazo', 'decididaPor', 'decididaPorNombre', 'fechaDecision']);
+    }
+
+    match /usuarios/{uid} {
+      // Cada usuario lee su perfil; el operador puede consultar pacientes.
+      allow read: if signedIn() && (request.auth.uid == uid || isOperator());
+      // Los perfiles se administran desde la consola de Firebase.
+      allow write: if false;
+    }
+
+    match /solicitudes/{solicitudId} {
+      // HU-03 y HU-05: el operador ve todas; el paciente solo las suyas.
+      allow read: if isOperator()
+                  || (isPatient() && resource.data.pacienteUid == request.auth.uid);
+      allow create: if (isPatient() && validPatientCreate())
+                    || (isOperator() && validOperatorCreate());
+      // Solo el operador cambia el estado; el paciente no puede modificar la decisión.
+      allow update: if isOperator()
+                    && (validFormulaUpdate() || validApproval() || validRejection());
+      allow delete: if false;
+    }
+  }
+}
